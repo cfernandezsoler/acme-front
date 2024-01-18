@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState } from "react";
+import { API_BASE_URL } from "../utils/constants";
 
 interface IUseApiGet<T> {
   get: (path: string, external?: boolean) => Promise<T | null>;
@@ -14,12 +15,16 @@ export function useApiGet<T>(): IUseApiGet<T> {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<unknown | null>(null);
 
-  async function get(path: string, external: boolean = false): Promise<T | null> {
+  async function get(
+    path: string,
+    external: boolean = false
+  ): Promise<T | null> {
     setLoading(true);
     setError(null);
 
     try {
-      const response = await fetch(!external ? `${process.env.API_BASE_URL}${path}` : path);
+      const url = !external ? `${API_BASE_URL}${path}` : path;
+      const response = await fetch(url);
       const data: T = await response.json();
 
       setLoading(false);
